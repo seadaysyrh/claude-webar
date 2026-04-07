@@ -3,10 +3,9 @@ import { ref, watch, onMounted, onUnmounted } from 'vue'
 import type { ModelConfig } from '@/types/ar'
 import { useAR } from '@/composables/useAR'
 
-// A-Frame / MindAR はグローバルスクリプト(CDN)として読み込み済みのため
-// カスタム要素を Vue のテンプレートコンパイラに知らせる設定が vite.config で必要
 const props = defineProps<{
-  model: ModelConfig
+  models: ModelConfig[]   // 全モデルを受け取り一括プリロード
+  selectedId: string      // 表示するモデルの id
 }>()
 
 const emit = defineEmits<{
@@ -41,11 +40,6 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <!--
-    MindAR は a-scene の mindar-image 属性で設定します。
-    imageTargetSrc: MindAR Compiler で生成した .mind ファイルのパス
-    public/targets/targets.mind に配置してください。
-  -->
   <a-scene
     ref="sceneRef"
     :mindar-image="`imageTargetSrc: ${targetSrc}; autoStart: true; uiLoading: yes; uiError: yes; uiScanning: yes; filterMinCF: 0.1; maxTrack: 1`"
@@ -56,19 +50,28 @@ onUnmounted(() => {
     device-orientation-permission-ui="enabled: false"
     style="width: 100%; height: 100%;"
   >
+    <!-- 全モデルを事前にプリロード -->
     <a-assets>
-      <a-asset-item :id="`model-${model.id}`" :src="model.glbPath" />
+      <a-asset-item
+        v-for="m in models"
+        :key="m.id"
+        :id="`model-${m.id}`"
+        :src="m.glbPath"
+      />
     </a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false" />
 
-    <!-- マーカー index 0 にモデルをアタッチ -->
     <a-entity mindar-image-target="targetIndex: 0">
+      <!-- 選択中のモデルのみ表示、他は visible="false" で非表示 -->
       <a-gltf-model
-        :src="`#model-${model.id}`"
-        :position="model.position"
-        :scale="model.scale"
+        v-for="m in models"
+        :key="m.id"
+        :src="`#model-${m.id}`"
+        :position="m.position"
+        :scale="m.scale"
         animation-mixer="loop: repeat"
+        :visible="m.id === selectedId"
       />
     </a-entity>
   </a-scene>

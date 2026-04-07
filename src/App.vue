@@ -60,7 +60,8 @@ function handleLost() {
   <div class="app-container">
     <!-- AR ビューア（全画面背景） -->
     <ARViewer
-      :model="selectedModel"
+      :models="models"
+      :selected-id="selectedId"
       @detected="handleDetected"
       @lost="handleLost"
     />
