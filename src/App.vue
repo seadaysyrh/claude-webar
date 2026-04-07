@@ -7,12 +7,14 @@ import type { ModelConfig } from '@/types/ar'
 
 // 利用可能なモデル一覧
 // glbPath は public/models/ 以下にファイルを配置してください
+const base = import.meta.env.BASE_URL
+
 const models: ModelConfig[] = [
   {
     id: 'duck',
     label: 'アヒル',
     description: 'シンプルな 3D アヒル',
-    glbPath: '/models/duck.glb',
+    glbPath: `${base}models/duck.glb`,
     scale: '0.05 0.05 0.05',
     position: '0 0 0'
   },
@@ -20,7 +22,7 @@ const models: ModelConfig[] = [
     id: 'robot',
     label: 'ロボット',
     description: 'アニメーション付きロボット',
-    glbPath: '/models/robot.glb',
+    glbPath: `${base}models/robot.glb`,
     scale: '0.08 0.08 0.08',
     position: '0 0 0'
   },
@@ -28,7 +30,7 @@ const models: ModelConfig[] = [
     id: 'astronaut',
     label: '宇宙飛行士',
     description: '宇宙飛行士フィギュア',
-    glbPath: '/models/astronaut.glb',
+    glbPath: `${base}models/astronaut.glb`,
     scale: '0.06 0.06 0.06',
     position: '0 0 0'
   }

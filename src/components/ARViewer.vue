@@ -17,6 +17,9 @@ const emit = defineEmits<{
 const { state, init, destroy } = useAR()
 const sceneRef = ref<Element | null>(null)
 
+const base = import.meta.env.BASE_URL
+const targetSrc = `${base}targets/targets.mind`
+
 watch(() => state.value.isDetected, (detected) => {
   if (detected) {
     emit('detected')
@@ -45,7 +48,7 @@ onUnmounted(() => {
   -->
   <a-scene
     ref="sceneRef"
-    mindar-image="imageTargetSrc: /targets/targets.mind; autoStart: true; uiLoading: yes; uiError: yes; uiScanning: yes; filterMinCF: 0.1; maxTrack: 1"
+    :mindar-image="`imageTargetSrc: ${targetSrc}; autoStart: true; uiLoading: yes; uiError: yes; uiScanning: yes; filterMinCF: 0.1; maxTrack: 1`"
     embedded
     color-space="sRGB"
     renderer="colorManagement: true"
