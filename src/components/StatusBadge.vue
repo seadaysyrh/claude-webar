@@ -1,17 +1,36 @@
+<!--
+  StatusBadge — AR 認識状態を表示するバッジコンポーネント
+
+  【学習ポイント: props と TypeScript】
+  親コンポーネントから isDetected を受け取り、
+  true/false に応じてクラスとテキストを切り替えるだけのシンプルな例。
+  defineProps<{ ... }>() で型付き props を宣言できる。
+-->
 <script setup lang="ts">
+// props の宣言
+// 型引数に interface を書くと、型チェックが自動でかかる
 defineProps<{
-  isDetected: boolean
+  isDetected: boolean // true = 認識中 / false = 待機中
 }>()
 </script>
 
 <template>
+  <!--
+    :class="..." は動的クラスのバインディング
+    isDetected が true なら 'detected'、false なら 'waiting' クラスが付く
+  -->
   <div class="status-badge" :class="isDetected ? 'detected' : 'waiting'">
     <span class="dot" />
+    <!-- {{ }} はテンプレート内での値の表示（Mustache 構文） -->
     <span class="label">{{ isDetected ? '認識中' : '待機中' }}</span>
   </div>
 </template>
 
 <style scoped>
+/*
+  scoped を付けると、このコンポーネント内だけにスタイルが適用される。
+  他のコンポーネントの同名クラスとぶつからない。
+*/
 .status-badge {
   display: inline-flex;
   align-items: center;
@@ -43,6 +62,7 @@ defineProps<{
   flex-shrink: 0;
 }
 
+/* 認識中のときだけドットをパルスアニメーションさせる */
 .detected .dot {
   animation: pulse 1.2s ease-in-out infinite;
 }

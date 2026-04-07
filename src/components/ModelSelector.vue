@@ -1,16 +1,30 @@
+<!--
+  ModelSelector — 表示する 3D モデルを選ぶカード一覧コンポーネント
+
+  【学習ポイント: emit でコンポーネント間通信】
+  子コンポーネントが親に「何かが起きた」を伝えるには emit を使う。
+  props は親 → 子への一方通行。
+  emit  は子 → 親への通知。
+  この組み合わせが Vue のコンポーネント通信の基本パターン。
+-->
 <script setup lang="ts">
 import type { ModelConfig } from '@/types/ar'
 
+// props: 親から受け取るデータ
 const props = defineProps<{
-  models: ModelConfig[]
-  selectedId: string
+  models: ModelConfig[]  // 表示するモデルの一覧
+  selectedId: string     // 現在選択中のモデル id
 }>()
 
+// emit: 子が親へ通知するイベントの定義
+// 'select' イベントを発火でき、引数の型は ModelConfig
 const emit = defineEmits<{
   select: [model: ModelConfig]
 }>()
 
+// カードをクリックしたとき親に通知する
 function handleSelect(model: ModelConfig) {
+  // emit('イベント名', 引数) で親コンポーネントに伝える
   emit('select', model)
 }
 </script>
@@ -18,6 +32,11 @@ function handleSelect(model: ModelConfig) {
 <template>
   <div class="model-selector">
     <p class="selector-title">モデルを選択</p>
+
+    <!--
+      v-for でモデル一覧を繰り返し描画する
+      :key は Vue が各要素を追跡するための一意な識別子（必須）
+    -->
     <div class="card-list">
       <button
         v-for="model in models"
@@ -53,7 +72,7 @@ function handleSelect(model: ModelConfig) {
 .card-list {
   display: flex;
   gap: 10px;
-  overflow-x: auto;
+  overflow-x: auto; /* 横スクロール可能にする */
   scrollbar-width: none;
   padding-bottom: 4px;
 }
@@ -78,6 +97,7 @@ function handleSelect(model: ModelConfig) {
   text-align: left;
 }
 
+/* selectedId と一致するカードに active クラスが付く */
 .model-card.active {
   border-color: #3b82f6;
   background: rgba(59, 130, 246, 0.25);
